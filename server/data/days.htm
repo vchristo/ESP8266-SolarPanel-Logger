@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/jquery.js"></script> 
+<script type="text/javascript">
+strFile = "";
+var fileIdx=12;
+var logIdx=0;
+var d = new Date();
+var day = d.getDate(); 
+var month = d.getMonth();
+var logVar = new Array(6);
+logVar[0] = "BCh";
+logVar[1] = "DcO";
+logVar[2] = "BaA";
+logVar[3] = "PaV";
+logVar[4] = "PaA";
+logVar[5] = "BaV";
+
+var varDes = new Array(6);
+varDes[0] = "Battery Charge Current";
+varDes[1] = "DC Output Current";
+varDes[2] = "Battery Current";
+varDes[3] = "Panel Voltage";
+varDes[4] = "Panel Current";
+varDes[5] = "Battery Voltage";
+
+strBCh="A";
+strDcO="B";
+strBaA="C";
+strPaV="D";
+strPaA="E";
+strBaV="F";
+
+strDay="";
+strMonth="";
+strFileIdx="";
+// /3023BChA, size: 16B
+// /3023DcOa, size: 15B
+// /3023BaAm, size: 15B
+//FS File: /3023PaVo, size: 16B
+//FS File: /3023PaAm, size: 16B
+//FS File: /3023BaVo, size: 15B
+/*
+char BCh[]="A";
+char DcO[]="B";
+char BaA[]="C";
+char PaV[]="D";
+char PaA[]="E";
+char BaV[]="F";
+
+*/
+if(day < 10){
+    strDay= "0" + String(day);
+}
+else strDay=String(day);
+if(month < 10)strMonth="0" + String(month);
+else strMonth=String(month);
+
+// value of checked input tag of type 'radio'
+var selectedValue = $('input[type=radio]:checked').val();
+
+// value of checked input tag having name of 'foo'
+var selectedValue = $('input[name=foo]:checked').val();
+
+// value of the first checked radio button, regardless of name
+var selectedValue = $('input:checked').val();
+strFile="";
+    function GetButton1()
+        {   
+          
+          fileIdx++;
+          if(fileIdx==24){
+              fileIdx=0;
+          }
+          if(fileIdx < 10){
+            strFileIdx = "0" + String(fileIdx);
+          }else {
+                        strFileIdx = String(fileIdx);
+          }
+          strFile = strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+          document.getElementById("myText_1").innerHTML = strFile;
+          
+          window.onload ();
+         
+        }
+        function GetButton2()
+        {
+          fileIdx--;
+          if(fileIdx==-1){
+             fileIdx=23;
+          }
+          if(fileIdx < 10){
+            strFileIdx = "0" + String(fileIdx);
+          }else {
+                        strFileIdx = String(fileIdx);
+                }
+          
+         // strFile = "logF" + String (fileIdx) + ".csv";
+         strFile =strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+          document.getElementById("myText_1").innerHTML =strFile;
+         
+         window.onload ();
+
+        }
+         function GetButton3()
+        {
+          logIdx ++;
+          if(logIdx==6){
+             logIdx=0;
+          }
+          
+         // strFile = "logF" + String (fileIdx) + ".csv";
+         strFile =strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+          document.getElementById("myText_1").innerHTML =strFile;
+         
+         window.onload ();
+
+        }
+         function GetButton4()
+        {
+          logIdx--;
+          if(logIdx ==-1){
+             logIdx=5;
+          }
+
+          
+         // strFile = "logF" + String (fileIdx) + ".csv";
+         strFile =strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+          document.getElementById("myText_1").innerHTML =strFile;
+         
+         window.onload ();
+
+        }
+window.onload = function () {
+$(document).ready(function () {
+  
+    $.ajax({
+        type: "GET",
+        url: strFile,
+        dataType: "text",
+        success: function (data) { processData(data); }
+    });
+
+    function processData(allText) {
+        var allLinesArray = allText.split('\n');
+        if (allLinesArray.length > 0) {
+            var dataPoints = [];
+            for (var i = 0; i <= allLinesArray.length - 1; i++) {
+	        var rowData = allLinesArray[i].split(',');
+	        if(rowData && rowData.length > 1)
+	            dataPoints.push({ label: rowData[0], y: parseFloat(rowData[1]) });
+            }
+            chart.options.data[0].dataPoints = dataPoints;
+            chart.render();
+        }
+    }
+
+            
+    var chart = new CanvasJS.Chart("chartContainer", {
+        theme: "theme2",
+        title: {
+            text: varDes[logIdx]
+        },
+        	axisY: {
+		includeZero: false
+	},
+        data: [
+        {
+            type: "line",
+            dataPoints: []
+        }
+        ]
+    });
+        
+});
+}
+</script>
+<script type="text/javascript" src="/canvasjs.min.js"></script>
+</head>
+  	 <style>
+        .IO_box {
+            float: left;
+            margin: 0 20px 20px 0;
+            border: 0px solid blue;
+            padding: 0 5px 0 5px;
+            width: 120px;
+        }
+
+        h1 {
+            font-size: 120%;
+            color: black;
+            margin: 0 0 10px 0;
+        }
+        h2 {
+            font-size: 85%;
+            color: #5734E6;
+            margin: 5px 0 5px 0;
+        }
+ 
+        p, form, button {
+            font-size: 80%;
+            color: #252525;
+        }
+        .small_text {
+            font-size: 70%;
+            color: #737373;
+        }
+    </style>
+
+<body>
+<div
+<input type="radio" name="foo" value="1" /></div> 
+<div 
+<input type="radio" name="foo" value="2" /></div>
+
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+<h2>"File to plot  : " <span id="myText_1"></span></h2>
+<div class="IO_box">
+<button type="button" id="CHART_1" onclick="GetButton1()">Hour + </button>
+<button type="button" id="CHART_2" onclick="GetButton2()">hour - </button><br /><br />
+<button type="button" id="CHART_3" onclick="GetButton3()">Var + </button>
+<button type="button" id="CHART_4" onclick="GetButton4()">Var - </button><br /><br />
+<button type="button" id="CHART_3" onclick="GetButton5()">Var + </button>
+<button type="button" id="CHART_4" onclick="GetButton6()">Var - </button><br /><br />
+</div>
+
+
+</body>
+</html>

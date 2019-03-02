@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="/jquery.js"></script> 
+<script type="text/javascript">
+strFile = "";
+var fileIdx=12;
+var varIdx=0;
+var logIdx=0;
+var d = new Date();
+var day = d.getDate(); 
+var month = d.getMonth()+1;
+var year = d.getYear()+1900;
+var idxDay=0;
+var logVar = new Array(6);
+logVar[0] = "BCh";
+logVar[1] = "DcO";
+logVar[2] = "BaA";
+logVar[3] = "PaV";
+logVar[4] = "PaA";
+logVar[5] = "BaV";
+
+
+
+var sufix = new Array(6);
+sufix[0]="A";
+sufix[1]="B";
+sufix[2]="C";
+sufix[3]="D";
+sufix[4]="E";
+sufix[5]="F";
+
+
+
+var varDes = new Array(6);
+varDes[0] = "Battery Charge Current";
+varDes[1] = "DC Output Current";
+varDes[2] = "Battery Current";
+varDes[3] = "Panel Voltage";
+varDes[4] = "Panel Current";
+varDes[5] = "Battery Voltage";
+
+
+dayIdxDay="";
+strDay="";
+strMonth="";
+strFileIdx="";
+strPart="";
+var f=1;
+
+if(month < 10)strMonth="0" + String(month);
+else strMonth=String(month);
+var selectedValue = $('input[type=radio]:checked').val();
+var selectedValue = $('input[name=foo]:checked').val();
+var selectedValue = $('input:checked').val();
+strFile="";
+function increseVar(){
+    document.getElementById("text3").value=varDes[varIdx];
+    varIdx +=1;
+    if(varIdx==6)varIdx=0;
+    window.onload();
+}
+function dincreseVar(){
+    document.getElementById("text3").value=varDes[varIdx];
+    varIdx -=1;
+    if(varIdx==-1)varIdx=5;
+    window.onload();
+}
+         
+function increaseDay(){
+       document.getElementById("text").value=day;
+       day=day+1;
+       if(day > daysInMonth(month,year))day=1;
+       window.onload ();
+       }    
+function dincreaseDay(){
+                document.getElementById("text").value=day;
+                day=day-1;
+                if(day==0)day=daysInMonth(month,year);
+                window.onload ();
+            }   
+
+function increaseMonth(){
+       document.getElementById("text1").value=month;
+       month=month+1;
+       if(month==13)month=1;
+       window.onload ();
+       }    
+function dincreaseMonth(){
+                document.getElementById("text1").value=month;
+                month=month-1;
+                if(month==0)month=12;
+                window.onload ();
+            }   
+function increaseYear(){
+       document.getElementById("text2").value=year;
+       year=year+1;
+       window.onload ();
+       }    
+function dincreaseYear(){
+                document.getElementById("text2").value=year;
+                year=year-1;
+                if(year==1900)year=2017;
+                window.onload ();
+            }  
+
+function currDate(){
+     document.getElementById("dayIdxDay").innerHTML = "Dias do Mês " + String(daysInMonth(month,year)) + " Mês " + String(month) + " Dia " + String(day) + " Ano " + String(year);
+}
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
+}
+    function adjustDays()
+    {   //day=d.getDate();
+        if(day < 10){
+        strDay= "0" + String(day + idxDay);
+        } else 
+            strDay=String(day + idxDay);
+    }
+    function GetButton1()
+        {   
+          adjustDays();
+          fileIdx++;
+          if(fileIdx==24){
+              fileIdx=0;
+          }
+          if(fileIdx < 10){
+            strFileIdx = "0" + String(fileIdx);
+          }else {
+                        strFileIdx = String(fileIdx);
+          }
+          strPart="Dia " + strDay + " Hora "  +  strFileIdx + " " + logVar[logIdx];
+          strFile = strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+          document.getElementById("myText_1").innerHTML = strPart;
+          currDate()
+          window.onload ();
+         
+        }
+        function GetButton2()
+        {
+          adjustDays();
+          fileIdx--;
+          if(fileIdx==-1){
+             fileIdx=23;
+          }
+          if(fileIdx < 10){
+            strFileIdx = "0" + String(fileIdx);
+          }else {
+                        strFileIdx = String(fileIdx);
+                }
+          
+         strPart="Dia " + strDay + " Hora "  +  strFileIdx + " " + logVar[logIdx];
+         strFile =strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+         document.getElementById("myText_1").innerHTML =strPart;
+         window.onload ();
+
+        }
+         function GetButton3()
+        {
+          adjustDays();
+          logIdx ++;
+          if(logIdx==6){
+             logIdx=0;
+          }
+          
+         strPart="Dia " + strDay + " Hora "  +  strFileIdx + " " + logVar[logIdx];
+         strFile =strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+         document.getElementById("myText_1").innerHTML =strPart;
+         window.onload ();
+
+        }
+         function GetButton4()
+        {
+          adjustDays();
+          logIdx--;
+          if(logIdx ==-1){
+             logIdx=5;
+          }
+
+         strPart="Dia " + strDay + " Hora "  +  strFileIdx + " " + logVar[logIdx];
+         strFile =strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+         document.getElementById("myText_1").innerHTML =strPart;
+         window.onload ();
+
+        }
+        
+        
+        
+        
+        function GetButton5() // Adjusta days by clicks
+        {
+          idxDay ++;
+         // day=d.getDate();
+          if(idxDay > 0)idxDay=0;
+//          if((idxDay + day)==daysInMonth(month-1,year)){
+         if((idxDay + day)==daysInMonth(month-1,year)+1){
+             idxDay=0;
+          }
+         adjustDays();
+         strPart="Dia " + strDay + " Hora "  +  strFileIdx + " " + logVar[logIdx];
+         strFile =strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+         document.getElementById("myText_1").innerHTML =strPart;
+        
+         window.onload ();
+
+        }
+         function GetButton6()
+        {
+          
+          //idxDay--;
+          day--;
+          if((day) ==0) {
+             day=daysInMonth(month,year);
+             month -=1;
+             if(month==0)month=11;
+             //day -=1;
+          }
+         adjustDays();
+         strPart="Dia " + strDay + " Hora "  +  strFileIdx + " " + logVar[logIdx];
+         strFile =strDay  +  strFileIdx + logVar[logIdx] + ".csv";
+         document.getElementById("myText_1").innerHTML =strPart;
+         
+         window.onload ();
+
+        }
+        
+        
+window.onload = function () {
+
+$(document).ready(function () {
+if(month < 10)strMonth="0" + String(month);
+else strMonth=String(month);
+adjustDays();
+currDate();
+document.getElementById("text").value=day;
+document.getElementById("text1").value=month;
+document.getElementById("text2").value=year;
+document.getElementById("text3").value=varDes[varIdx];
+
+strFile=String(day)+strMonth+String(year-2000)+sufix[varIdx] + ".csv";
+document.getElementById("myText_1").innerHTML =strFile;
+if(f==1){
+    GetButton1();
+    f=0;
+}
+    $.ajax({
+        type: "GET",
+        url: strFile,
+        dataType: "text",
+        success: function (data) { processData(data); }
+    });
+
+    function processData(allText) {
+        var allLinesArray = allText.split('\n');
+        if (allLinesArray.length > 0) {
+            var dataPoints = [];
+            for (var i = 0; i <= allLinesArray.length - 1; i++) {
+	        var rowData = allLinesArray[i].split(',');
+	        if(rowData && rowData.length > 1)
+	            dataPoints.push({ label: rowData[0], y: parseFloat(rowData[1]) });
+            }
+            chart.options.data[0].dataPoints = dataPoints;
+            chart.render();
+        }
+    }
+
+            
+    var chart = new CanvasJS.Chart("chartContainer", {
+        theme: "theme2",
+        title: {
+            text: varDes[varIdx]
+        },
+        	axisY: {
+		includeZero: false
+	},
+        data: [
+        {
+            type: "line",
+            dataPoints: []
+        }
+        ]
+    });
+        
+});
+}
+</script>
+<script type="text/javascript" src="/canvasjs.min.js"></script>
+</head>
+  	 <style>
+        .IO_box {
+            float: left;
+            margin: 0 20px 20px 0;
+            border: 0px solid blue;
+            padding: 0 5px 0 5px;
+            width: 120px;
+        }
+
+        h1 {
+            font-size: 120%;
+            color: black;
+            margin: 0 0 10px 0;
+        }
+        h2 {
+            font-size: 85%;
+            color: #5734E6;
+            margin: 5px 0 5px 0;
+        }
+ 
+        p, form, button {
+            font-size: 80%;
+            color: #252525;
+        }
+        .small_text {
+            font-size: 70%;
+            color: #737373;
+        }
+    </style>
+
+<body>
+
+<button type="button" onclick="increaseDay()">Dia +</button>
+        <input type="text" id="text">
+<button type="button" onclick="dincreaseDay()">Dia -</button>
+       
+
+<button type="button" onclick="increaseMonth()">Mes +</button>
+        <input type="text1" id="text1">
+<button type="button" onclick="dincreaseMonth()">Mes -</button>
+       
+
+<button type="button" onclick="increaseYear()">Ano +</button>
+        <input type="text2" id="text2">
+<button type="button" onclick="dincreaseYear()">Ano -</button>
+
+
+<button type="button" onclick="increseVar()">Função +</button>
+        <input type="text3" id="text3">
+<button type="button" onclick="dincreseVar()">Função -</button>
+       
+   
+
+<div
+<input type="radio" name="foo" value="1" /></div> 
+<div 
+<input type="radio" name="foo" value="2" /></div>
+
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+<h2><span id="dayIdxDay"></span></h2>
+<h2>"File to plot  : " <span id="myText_1"></span></h2>
+
+
+
+</body>
+</html>

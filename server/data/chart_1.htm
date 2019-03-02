@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title> LCIM Basic Solar Panel Monitor</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+ <script type="text/javascript">
+
+
+var heap,temp,digi;
+var reloadPeriod = 5000;
+var running = false;
+var realTime=true;
+var batChargCurrent=30;
+var updateInterval = 5000;  
+	strLED1 = "";
+    strLED2 = "";
+    function GetButton1()
+        {
+
+           }
+    function loadValues(){
+     
+      nocache = "&nocache=" + Math.random() * 1000000;
+      if(!running) return;
+      var xh1 = new XMLHttpRequest();
+      var request1 = new XMLHttpRequest();
+      xh1.onreadystatechange = function(){
+      
+        if (xh1.readyState == 4){//batChargCurrent=batChargCurrent +1;
+
+          if(xh1.status == 200) {
+         
+            var res = JSON.parse(xh1.responseText);
+            batChargCurrent = res.batChargCurrent *60/1024;
+            batteryVoltage= res.batteryVoltage *15/1023;
+            PVCurrent = res.PVCurrent*30/1023;
+            PVVoltaget = res.PVVoltage*48/1024;
+            batteryCurrent = res.batteryCurrent*120/1024;
+            dcOutCurrent = res.dcOutCurrent*120/1024;
+
+         } 
+       }
+      };
+      xh1.open("GET", "/all", true);
+      xh1.send(null);
+      
+    };
+
+    
+        function run(){
+      if(!running){
+        running = true;
+        loadValues();
+        //GetArduinoIO();
+      }
+    }
+    
+    
+    function onBodyLoad(){
+      var refreshInput = 1000;//document.getElementById("refresh-rate");
+      refreshInput.value = reloadPeriod;
+      refreshInput.onchange = function(e){
+        var value = parseInt(e.target.value);
+        reloadPeriod = (value > 0)?value:0;
+        e.target.value = reloadPeriod;
+      }
+
+
+      run();
+    }
+window.onload = function () {
+loadValues();
+
+var dps = []; // dataPoints
+var chart = new CanvasJS.Chart(chartContainer, {
+	title :{
+		text: "Dynamic Data"
+	},
+	axisY: {
+		includeZero: false
+	},      
+	data: [{
+		type: "line",
+		dataPoints: dps
+	}]
+});
+
+var xVal = 0;
+var yVal = 100; 
+
+var dataLength = 200; // number of dataPoints visible at any point
+
+var updateChart = function (count) {
+document.getElementById("myText").innerHTML = batChargCurrent;
+document.getElementById("myText_1").innerHTML = updateInterval;
+	count = count || 1;
+
+	for (var j = 0; j < count; j++) {
+	loadValues();
+	//	yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
+	    yVal = batChargCurrent ;
+		dps.push({
+			x: xVal,
+			y: yVal
+			
+		});
+		xVal++;
+		 
+	}
+
+	if (dps.length > dataLength) {
+		dps.shift();
+	}
+
+	chart.render();
+	onBodyLoad();
+};
+   
+
+updateChart(dataLength);
+ 
+setInterval(function(){
+    loadValues();
+    updateChart()}, updateInterval);
+     
+    
+}
+
+
+</script>
+
+
+</head>
+<body>
+<script src="/canvasjs.min.js"></script>
+<h1>"the value for batChargCurrent is: " <span id="myText"></span></h1>
+<h2>"Update interval : " <span id="myText_1"></span></h2>
+<div id="chartContainer" style="height: 370px; width:100%;"></div>
+<button onclick="window.location.href='/chart_log_1.htm'">Log Grafico</button>
+
+</body>
+</html>
